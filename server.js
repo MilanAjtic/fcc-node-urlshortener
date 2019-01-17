@@ -4,6 +4,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser')
 require('dotenv').config()
+const dns = require('dns');
 
 mongoose.Promise = global.Promise
 
@@ -33,19 +34,31 @@ app.get('/', function(req, res){
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
+app.get("/api/hello", (req, res) => {
   res.json({greeting: 'hello API'});
 });
 
 
-app.post("/api/shorturl/new", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.post("/api/shorturl/new", (req, res) => {
+    const obj = {original_url: req.body.url}
+    new Url(obj)
+    .save()
+    .then(url => {
+      res.json({
+        original_url: url.original_url,
+        short_url: url._id
+      })
+    })
+})
+
+app.get("/api/shorturl/:id", (req, res) => {
+  Url
+  .findOne({_id: req.params.id})
+  .then(url => {
+    res.redirect(url.original_url)
+  })
 });
 
-app.get("/api/shorturl/:id", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
-app.listen(3002, function () {
-  console.log('Node.js listening ...');
+const listener = app.listen(3002, () => {
+  console.log('Node.js listening on port ' + listener.address().port);
 });
