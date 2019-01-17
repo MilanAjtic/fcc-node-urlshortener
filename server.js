@@ -2,6 +2,8 @@
 
 var express = require('express');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser')
+require('dotenv').config()
 
 mongoose.Promise = global.Promise
 
@@ -44,6 +46,6 @@ app.get("/api/shorturl/:id", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.listen(port, function () {
+app.listen(3002, function () {
   console.log('Node.js listening ...');
 });
