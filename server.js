@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser')
 require('dotenv').config()
 const dns = require('dns');
+const url = require('url')
 
 mongoose.Promise = global.Promise
 
@@ -40,15 +41,21 @@ app.get("/api/hello", (req, res) => {
 
 
 app.post("/api/shorturl/new", (req, res) => {
-    const obj = {original_url: req.body.url}
-    new Url(obj)
-    .save()
-    .then(url => {
-      res.json({
-        original_url: url.original_url,
-        short_url: url._id
+  const myURL = url.parse(req.body.url);
+  dns.lookup(myURL.hostname, (err, address, family) => {
+    // console.log('address', address)
+    if(address) {
+      const obj = {original_url: req.body.url}
+      new Url(obj)
+      .save()
+      .then(url => {
+        res.json({
+          original_url: url.original_url,
+          short_url: url._id
+        })
       })
-    })
+    } else res.json({error: "invalid URL"})
+  }) 
 })
 
 app.get("/api/shorturl/:id", (req, res) => {

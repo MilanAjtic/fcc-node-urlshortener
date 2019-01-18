@@ -16,7 +16,7 @@
 		"shortid": "^2.2.14"
 	},
 	"engines": {
-		"node": "4.4.5"
+		"node": "8.11.3"
 	},
 	"repository": {
 		"type": "git",
